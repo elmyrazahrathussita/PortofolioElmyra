@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elmyra Zahrathusita - Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Poppins:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    * {
+      scroll-behavior: smooth;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+    
+    @keyframes floating {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .slide-up {
+      animation: slideUp 0.6s ease-out forwards;
+      opacity: 0;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(30, 58, 95, 0.15);
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #5ba4e6, #1e3a5f);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .skill-bar {
+      background: linear-gradient(90deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+      border-radius: 9999px;
+      height: 8px;
+      transition: width 1s ease-out;
+    }
+    
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.4;
+      animation: blobFloat 8s ease-in-out infinite;
+    }
+    
+    @keyframes blobFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full overflow-auto">
+  <div id="app-wrapper" class="min-h-full w-full"><!-- Photo Edit Modal -->
+   <div id="photo-edit-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+     <div class="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-3xl">
+      <h3 class="text-xl font-semibold text-slate-800" style="font-family: 'Poppins', sans-serif;">��� Edit Foto Portfolio</h3><button id="close-modal-btn" class="text-slate-400 hover:text-slate-600 transition-colors">
+       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+       </svg></button>
+     </div>
+     <div class="p-6 space-y-6"><!-- Profile Photo -->
+      <div class="space-y-3"><label class="block font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;"> Foto Profil </label>
+       <div class="flex items-center gap-4">
+        <div id="preview-profile" class="w-20 h-20 rounded-full bg-gradient-to-br from-sky-100 to-blue-200 flex items-center justify-center border-2 border-sky-200"><span class="text-2xl">📷</span>
+        </div><input type="file" id="input-profile" accept="image" class="hidden"> <button onclick="document.getElementById('input-profile').click()" class="px-4 py-2 bg-sky-100 text-sky-600 rounded-lg hover:bg-sky-200 transition-colors font-medium text-sm"> Pilih Foto </button>
+       </div><input type="text" id="url-profile" placeholder="Atau masukkan URL foto" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400" style="font-family: 'Poppins', sans-serif;">
+      </div><!-- Poster Photo -->
+      <div class="space-y-3"><label class="block font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;"> Foto Karya Poster </label>
+       <div class="flex items-center gap-4"><img id="preview-poster" src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&amp;h=400&amp;fit=crop" alt="Poster Preview" class="w-20 h-20 rounded-lg object-cover border-2 border-sky-200"> <input type="file" id="input-poster" accept="image" class="hidden"> <button onclick="document.getElementById('input-poster').click()" class="px-4 py-2 bg-sky-100 text-sky-600 rounded-lg hover:bg-sky-200 transition-colors font-medium text-sm"> Pilih Foto </button>
+       </div><input type="text" id="url-poster" placeholder="Atau masukkan URL foto" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400" style="font-family: 'Poppins', sans-serif;">
+      </div><!-- Painting Photo -->
+      <div class="space-y-3"><label class="block font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;"> Foto Karya Lukisan </label>
+       <div class="flex items-center gap-4"><img id="preview-painting" src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&amp;h=400&amp;fit=crop" alt="Painting Preview" class="w-20 h-20 rounded-lg object-cover border-2 border-sky-200"> <input type="file" id="input-painting" accept="image " class="hidden"> <button onclick="document.getElementById('input-painting').click()" class="px-4 py-2 bg-sky-100 text-sky-600 rounded-lg hover:bg-sky-200 transition-colors font-medium text-sm"> Pilih Foto </button>
+       </div><input type="text" id="url-painting" placeholder="Atau masukkan URL foto" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400" style="font-family: 'Poppins', sans-serif;">
+      </div><!-- Science Photo -->
+      <div class="space-y-3"><label class="block font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;"> Foto Proyek Sains </label>
+       <div class="flex items-center gap-4"><img id="preview-science" src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&amp;h=400&amp;fit=crop" alt="Science Preview" class="w-20 h-20 rounded-lg object-cover border-2 border-sky-200"> <input type="file" id="input-science" accept="image" class="hidden"> <button onclick="document.getElementById('input-science').click()" class="px-4 py-2 bg-sky-100 text-sky-600 rounded-lg hover:bg-sky-200 transition-colors font-medium text-sm"> Pilih Foto </button>
+       </div><input type="text" id="url-science" placeholder="Atau masukkan URL foto" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400" style="font-family: 'Poppins', sans-serif;">
+      </div><!-- Photography Photo -->
+      <div class="space-y-3"><label class="block font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;"> Foto Karya Fotografi </label>
+       <div class="flex items-center gap-4"><img id="preview-photography" src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&amp;h=400&amp;fit=crop" alt="Photography Preview" class="w-20 h-20 rounded-lg object-cover border-2 border-sky-200"> <input type="file" id="input-photography" accept="image" class="hidden"> <button onclick="document.getElementById('input-photography').click()" class="px-4 py-2 bg-sky-100 text-sky-600 rounded-lg hover:bg-sky-200 transition-colors font-medium text-sm"> Pilih Foto </button>
+       </div><input type="text" id="url-photography" placeholder="Atau masukkan URL foto" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400" style="font-family: 'Poppins', sans-serif;">
+      </div>
+     </div>
+     <div class="sticky bottom-0 bg-slate-50 px-6 py-4 border-t border-slate-200 rounded-b-3xl flex justify-end gap-3"><button id="cancel-btn" class="px-6 py-2 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-100 transition-colors font-medium"> Batal </button> <button id="save-photos-btn" class="px-6 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors font-medium"> Simpan Foto </button>
+     </div>
+    </div>
+   </div><!-- Header/Navigation -->
+   <header id="header" class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 border-b border-pink-100">
+    <nav class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between"><a href="#home" id="site-title" class="text-xl font-semibold gradient-text" style="font-family: 'Playfair Display', serif;"> Elmyra Zahrathusita </a>
+     <div class="hidden md:flex items-center gap-8"><a href="#home" class="nav-link text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">Home</a> <a href="#about" class="nav-link text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">About</a> <a href="#skills" class="nav-link text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">Skills</a> <a href="#portfolio" class="nav-link text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">Portfolio</a> <a href="#contact" class="nav-link text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">Contact</a> <button id="edit-photos-btn" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all shadow-md hover:shadow-lg font-medium text-sm" style="font-family: 'Poppins', sans-serif;"> 📷 Edit Foto </button>
+     </div><button id="mobile-menu-btn" class="md:hidden text-slate-600 p-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg></button>
+    </nav><!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-pink-100 px-6 py-4">
+     <div class="flex flex-col gap-4"><a href="#home" class="text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">Home</a> <a href="#about" class="text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">About</a> <a href="#skills" class="text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">Skills</a> <a href="#portfolio" class="text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">Portfolio</a> <a href="#contact" class="text-slate-600 hover:text-pink-600 transition-colors font-medium" style="font-family: 'Poppins', sans-serif;">Contact</a> <button id="edit-photos-btn-mobile" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all shadow-md font-medium text-sm text-center" style="font-family: 'Poppins', sans-serif;"> 📷 Edit Foto </button>
+     </div>
+    </div>
+   </header><!-- Hero Section -->
+   <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden" style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 30%, #e0e7ff 70%, #dbeafe 100%);"><!-- Decorative Blobs -->
+    <div class="blob w-72 h-72 bg-pink-300 top-20 -left-20"></div>
+    <div class="blob w-96 h-96 bg-purple-200 bottom-20 -right-32" style="animation-delay: -4s;"></div>
+    <div class="blob w-64 h-64 bg-blue-200 top-1/2 left-1/3" style="animation-delay: -2s;"></div>
+    <div class="relative z-10 max-w-6xl mx-auto px-6 py-32 flex flex-col lg:flex-row items-center gap-12"><!-- Text Content -->
+     <div class="flex-1 text-center lg:text-left">
+      <p id="hero-greeting" class="slide-up stagger-1 text-pink-600 font-medium mb-4" style="font-family: 'Poppins', sans-serif;">✨ Halo, Saya</p>
+      <h1 class="slide-up stagger-2 text-4xl md:text-5xl lg:text-6xl font-bold mb-4 gradient-text" style="font-family: 'Playfair Display', serif;">Elmyra Zahrathusita</h1>
+      <p id="hero-role" class="slide-up stagger-3 text-xl md:text-2xl text-slate-600 mb-6" style="font-family: 'Poppins', sans-serif;">Desainer Grafis &amp; Kreator Visual</p>
+      <p id="hero-description" class="slide-up stagger-4 text-slate-500 mb-8 max-w-lg mx-auto lg:mx-0" style="font-family: 'Poppins', sans-serif;">Siswa SMAN 1 Subang dengan passion di bidang desain grafis dan aspirasi menjadi laboran profesional di bidang biologi.</p>
+      <div class="slide-up stagger-5 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"><a href="#portfolio" class="px-8 py-3 rounded-full font-medium text-white transition-all hover:shadow-lg hover:scale-105" style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); font-family: 'Poppins', sans-serif;"> Lihat Portfolio </a> <a href="#contact" class="px-8 py-3 rounded-full font-medium border-2 border-pink-400 text-pink-600 hover:bg-pink-50 transition-all" style="font-family: 'Poppins', sans-serif;"> Hubungi Saya </a>
+      </div>
+     </div><!-- Avatar/Photo -->
+     <div class="flex-1 flex justify-center">
+      <div class="floating relative">
+       <div class="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-pink-200 to-purple-300 flex items-center justify-center shadow-2xl overflow-hidden border-8 border-white"><!-- Foto profil kosong - akan diisi melalui tombol Edit Foto -->
+        <div class="w-full h-full bg-gradient-to-br from-pink-100 to-purple-200 flex items-center justify-center"><span class="text-6xl">📷</span>
+        </div>
+       </div><!-- Floating Elements -->
+       <div class="absolute -top-4 -right-4 w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center" style="animation: floating 2.5s ease-in-out infinite; animation-delay: -0.5s;">
+        🎨
+       </div>
+       <div class="absolute -bottom-2 -left-6 w-14 h-14 bg-white rounded-2xl shadow-lg flex items-center justify-center" style="animation: floating 3s ease-in-out infinite; animation-delay: -1s;">
+        💕
+       </div>
+       <div class="absolute top-1/2 -right-8 w-12 h-12 bg-white rounded-2xl shadow-lg flex items-center justify-center" style="animation: floating 2.8s ease-in-out infinite; animation-delay: -1.5s;">
+        💫
+       </div>
+      </div>
+     </div>
+    </div><!-- Scroll Indicator --> <a href="#about" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+     <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+     </svg></a>
+   </section><!-- About Section -->
+   <section id="about" class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="text-center mb-16"><span class="text-pink-500 font-medium" style="font-family: 'Poppins', sans-serif;">Kenali Saya</span>
+      <h2 id="about-title" class="text-3xl md:text-4xl font-bold mt-2 gradient-text" style="font-family: 'Playfair Display', serif;">Tentang Saya</h2>
+     </div>
+     <div class="grid md:grid-cols-2 gap-12 items-center"><!-- Info Cards -->
+      <div class="space-y-6">
+       <div class="card-hover bg-gradient-to-r from-pink-50 to-purple-50 p-6 rounded-2xl border border-pink-100">
+        <div class="flex items-start gap-4">
+         <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center text-2xl">
+          👋
+         </div>
+         <div>
+          <h3 class="font-semibold text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">Perkenalan</h3>
+          <p id="about-bio" class="text-slate-600" style="font-family: 'Poppins', sans-serif;">Nama saya Elmyra Zahrathusita. Saya memiliki ketertarikan besar di bidang biologi dan desain grafis. Saya seorang individu yang kreatif, penuh semangat, dan selalu siap untuk belajar hal-hal baru.</p>
+         </div>
+        </div>
+       </div>
+       <div class="card-hover bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100">
+        <div class="flex items-start gap-4">
+         <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-2xl">
+          🎯
+         </div>
+         <div>
+          <h3 class="font-semibold text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">Minat &amp; Tujuan</h3>
+          <p class="text-slate-600" style="font-family: 'Poppins', sans-serif;">Memiliki minat yang besar di bidang Biologi. Tujuan utama saya adalah menjadi seorang Laboran profesional yang berkontribusi dalam penelitian ilmiah.</p>
+         </div>
+        </div>
+       </div>
+       <div class="card-hover bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-2xl border border-indigo-100">
+        <div class="flex items-start gap-4">
+         <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-2xl">
+          🎓
+         </div>
+         <div>
+          <h3 class="font-semibold text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">Pendidikan</h3>
+          <ul class="text-slate-600 space-y-1" style="font-family: 'Poppins', sans-serif;">
+           <li class="flex items-center gap-2"><span class="w-2 h-2 bg-indigo-400 rounded-full"></span> SD Perumnas 1 Subang</li>
+           <li class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-400 rounded-full"></span> SMPN 1 Subang</li>
+           <li class="flex items-center gap-2"><span class="w-2 h-2 bg-sky-400 rounded-full"></span> SMAN 1 Subang (Sekarang)</li>
+          </ul>
+         </div>
+        </div>
+       </div>
+      </div><!-- Stats/Highlights -->
+      <div class="grid grid-cols-2 gap-6">
+       <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-slate-100 text-center">
+        <div class="text-4xl font-bold gradient-text mb-2" style="font-family: 'Playfair Display', serif;">
+         🎨
+        </div>
+        <p class="text-slate-500" style="font-family: 'Poppins', sans-serif;">Desain Grafis</p>
+       </div>
+       <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-slate-100 text-center">
+        <div class="text-4xl font-bold gradient-text mb-2" style="font-family: 'Playfair Display', serif;">
+         🔬
+        </div>
+        <p class="text-slate-500" style="font-family: 'Poppins', sans-serif;">Biologi</p>
+       </div>
+       <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-slate-100 text-center">
+        <div class="text-4xl font-bold gradient-text mb-2" style="font-family: 'Playfair Display', serif;">
+         ✈️
+        </div>
+        <p class="text-slate-500" style="font-family: 'Poppins', sans-serif;">Travelling</p>
+       </div>
+       <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-slate-100 text-center">
+        <div class="text-4xl font-bold gradient-text mb-2" style="font-family: 'Playfair Display', serif;">
+         📸
+        </div>
+        <p class="text-slate-500" style="font-family: 'Poppins', sans-serif;">Fotografi</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Skills Section -->
+   <section id="skills" class="py-24" style="background: linear-gradient(180deg, #fdf2f8 0%, #fce7f3 100%);">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="text-center mb-16"><span class="text-pink-500 font-medium" style="font-family: 'Poppins', sans-serif;">Kemampuan</span>
+      <h2 class="text-3xl md:text-4xl font-bold mt-2 gradient-text" style="font-family: 'Playfair Display', serif;">Keahlian Saya</h2>
+     </div>
+     <div class="grid md:grid-cols-2 gap-12"><!-- Soft Skills -->
+      <div class="card-hover bg-white p-8 rounded-3xl shadow-lg">
+       <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-gradient-to-br from-pink-400 to-purple-500 rounded-2xl flex items-center justify-center text-white text-2xl">
+         💡
+        </div>
+        <h3 class="text-xl font-semibold text-slate-800" style="font-family: 'Poppins', sans-serif;">Soft Skills</h3>
+       </div>
+       <div class="space-y-6">
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;">Komunikasi</span> <span class="text-pink-500 font-medium">90%</span>
+         </div>
+         <div class="bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div class="skill-bar" style="width: 90%;"></div>
+         </div>
+        </div>
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;">Bersosialisasi</span> <span class="text-pink-500 font-medium">85%</span>
+         </div>
+         <div class="bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div class="skill-bar" style="width: 85%;"></div>
+         </div>
+        </div>
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;">Kreativitas</span> <span class="text-pink-500 font-medium">88%</span>
+         </div>
+         <div class="bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div class="skill-bar" style="width: 88%;"></div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Hard Skills -->
+      <div class="card-hover bg-white p-8 rounded-3xl shadow-lg">
+       <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-2xl">
+         ⚙️
+        </div>
+        <h3 class="text-xl font-semibold text-slate-800" style="font-family: 'Poppins', sans-serif;">Hard Skills</h3>
+       </div>
+       <div class="space-y-6">
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;">Adobe Photoshop</span> <span class="text-blue-500 font-medium">92%</span>
+         </div>
+         <div class="bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div class="skill-bar" style="width: 92%; background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);"></div>
+         </div>
+        </div>
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;">Figma</span> <span class="text-blue-500 font-medium">87%</span>
+         </div>
+         <div class="bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div class="skill-bar" style="width: 87%; background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);"></div>
+         </div>
+        </div>
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-medium text-slate-700" style="font-family: 'Poppins', sans-serif;">Biologi &amp; Mikro</span> <span class="text-blue-500 font-medium">85%</span>
+         </div>
+         <div class="bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div class="skill-bar" style="width: 85%; background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);"></div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Portfolio Section -->
+   <section id="portfolio" class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="text-center mb-16"><span class="text-pink-500 font-medium" style="font-family: 'Poppins', sans-serif;">Karya Saya</span>
+      <h2 class="text-3xl md:text-4xl font-bold mt-2 gradient-text" style="font-family: 'Playfair Display', serif;">Portfolio</h2>
+     </div>
+     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"><!-- Project 1 -->
+      <div class="card-hover group bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100">
+       <div class="h-48 bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-200 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div><span class="text-6xl"><img src="karya_poster.jpeg"></span>
+       </div>
+       <div class="p-6">
+        <h3 class="font-semibold text-lg text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">Desain Poster</h3>
+        <p class="text-slate-500 text-sm mb-4" style="font-family: 'Poppins', sans-serif;">Koleksi desain poster untuk berbagai kegiatan sekolah dan organisasi.</p>
+        <div class="flex gap-2"><span class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-xs font-medium">Grafis</span> <span class="px-3 py-1 bg-teal-100 text-teal-600 rounded-full text-xs font-medium">Kreatif</span>
+        </div>
+       </div>
+      </div><!-- Project 2 -->
+      <div class="card-hover group bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100">
+       <div class="h-48 bg-gradient-to-br from-fuchsia-100 via-purple-100 to-violet-200 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-fuchsia-400/20 to-violet-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div><span class="text-6xl"><img src="karya_lukisan.jpeg"></span>
+       </div>
+       <div class="p-6">
+        <h3 class="font-semibold text-lg text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">Lukisan</h3>
+        <p class="text-slate-500 text-sm mb-4" style="font-family: 'Poppins', sans-serif;">Koleksi lukisan dengan berbagai media dan teknik melukis.</p>
+        <div class="flex gap-2"><span class="px-3 py-1 bg-fuchsia-100 text-fuchsia-600 rounded-full text-xs font-medium">Seni</span> <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-medium">Lukisan</span>
+        </div>
+       </div>
+      </div><!-- Project 3 -->
+      <div class="card-hover group bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100">
+       <div class="h-48 bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-200 flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-sky-400/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></div><span class="text-6xl"><img src="fotografi.jpeg"></span>
+       </div>
+       <div class="p-6">
+        <h3 class="font-semibold text-lg text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">Fotografi</h3>
+        <p class="text-slate-500 text-sm mb-4" style="font-family: 'Poppins', sans-serif;">Koleksi foto landscape, portrait, dan moment spesial yang saya abadikan.</p>
+        <div class="flex gap-2"><span class="px-3 py-1 bg-sky-100 text-sky-600 rounded-full text-xs font-medium">Foto</span> <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">Visual</span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Contact Section -->
+   <section id="contact" class="py-24" style="background: linear-gradient(180deg, #fdf2f8 0%, #fce7f3 100%);">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="text-center mb-16"><span class="text-pink-500 font-medium" style="font-family: 'Poppins', sans-serif;">Hubungi Saya</span>
+      <h2 id="contact-title" class="text-3xl md:text-4xl font-bold mt-2 gradient-text" style="font-family: 'Playfair Display', serif;">Mari Terhubung</h2>
+      <p class="text-slate-500 mt-4 max-w-lg mx-auto" style="font-family: 'Poppins', sans-serif;">Jangan ragu untuk menghubungi saya untuk kolaborasi, pertanyaan, atau sekadar menyapa!</p>
+     </div>
+     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6"><!-- Email --> <a href="mailto:elmyrazahrathussita@gmail.com" class="card-hover bg-white p-6 rounded-2xl shadow-lg text-center group">
+       <div class="w-16 h-16 bg-gradient-to-br from-pink-100 to-rose-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+        <svg class="w-8 h-8 text-pink-500" viewbox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+        </svg>
+       </div><h3 class="font-semibold text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">Email</h3><p class="text-slate-500 text-sm break-all" style="font-family: 'Poppins', sans-serif;">elmyrazahrathussita@gmail.com</p></a> <!-- WhatsApp --> <a href="https://wa.me/6282126120541" target="_blank" rel="noopener noreferrer" class="card-hover bg-white p-6 rounded-2xl shadow-lg text-center group">
+       <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+        <svg class="w-8 h-8 text-green-500" viewbox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+        </svg>
+       </div><h3 class="font-semibold text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">WhatsApp</h3><p class="text-slate-500 text-sm" style="font-family: 'Poppins', sans-serif;">082126120541</p></a> <!-- Instagram --> <a href="https://instagram.com/elzmyraa" target="_blank" rel="noopener noreferrer" class="card-hover bg-white p-6 rounded-2xl shadow-lg text-center group">
+       <div class="w-16 h-16 bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+        <svg class="w-8 h-8 text-pink-500" viewbox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+        </svg>
+       </div><h3 class="font-semibold text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">Instagram</h3><p class="text-slate-500 text-sm" style="font-family: 'Poppins', sans-serif;">@elzmyraa</p></a> <!-- GitHub --> <a href="https://github.com/eelmiera" target="_blank" rel="noopener noreferrer" class="card-hover bg-white p-6 rounded-2xl shadow-lg text-center group">
+       <div class="w-16 h-16 bg-gradient-to-br from-slate-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+        <svg class="w-8 h-8 text-slate-700" viewbox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+        </svg>
+       </div><h3 class="font-semibold text-slate-800 mb-2" style="font-family: 'Poppins', sans-serif;">GitHub</h3><p class="text-slate-500 text-sm" style="font-family: 'Poppins', sans-serif;">eelmiera</p></a>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="py-8 border-t border-sky-100" style="background: linear-gradient(180deg, #1e3a5f 0%, #0f172a 100%);">
+    <div class="max-w-6xl mx-auto px-6">
+     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <p id="footer-text" class="text-sky-200" style="font-family: 'Poppins', sans-serif;">©️ 2026 Elmyra Zahrathusita. All rights reserved.</p>
+      <div class="flex items-center gap-6"><a href="https://instagram.com/elzmyraa" target="_blank" rel="noopener noreferrer" class="text-sky-300 hover:text-white transition-colors">
+        <svg class="w-5 h-5" viewbox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+        </svg></a> <a href="https://github.com/eelmiera" target="_blank" rel="noopener noreferrer" class="text-sky-300 hover:text-white transition-colors">
+        <svg class="w-5 h-5" viewbox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+        </svg></a> <a href="mailto:elmyrazahrathussita@gmail.com" class="text-sky-300 hover:text-white transition-colors">
+        <svg class="w-5 h-5" viewbox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+        </svg></a>
+      </div>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+    const defaultConfig = {
+      site_title: 'Elmyra Zahrathusita',
+      tagline: 'Desainer Grafis & Kreator Visual',
+      hero_greeting: '✨ Halo, Saya',
+      hero_role: 'Desainer Grafis & Kreator Visual',
+      hero_description: 'Siswa SMAN 1 Subang dengan passion di bidang desain grafis dan aspirasi menjadi laboran profesional di bidang biologi.',
+      about_title: 'Tentang Saya',
+      about_bio: 'Nama saya Elmyra Zahrathusita, lahir di Bandung pada 6 Juni 2009. Saat ini saya bersekolah di SMAN 1 Subang dan memiliki ketertarikan besar di bidang biologi dan desain grafis.',
+      contact_title: 'Mari Terhubung',
+      footer_text: '© 2026 Elmyra Zahrathusita. All rights reserved.',
+      primary_color: '#1e3a5f',
+      secondary_color: '#5ba4e6',
+      background_color: '#e0f2fe',
+      text_color: '#334155',
+      accent_color: '#3b82f6',
+      font_family: 'Poppins',
+      font_size: 16
+    };
+
+    function onConfigChange(config) {
+      const siteTitle = document.getElementById('site-title');
+      const heroGreeting = document.getElementById('hero-greeting');
+      const heroRole = document.getElementById('hero-role');
+      const heroDescription = document.getElementById('hero-description');
+      const aboutTitle = document.getElementById('about-title');
+      const aboutBio = document.getElementById('about-bio');
+      const contactTitle = document.getElementById('contact-title');
+      const footerText = document.getElementById('footer-text');
+
+      if (siteTitle) siteTitle.textContent = config.site_title || defaultConfig.site_title;
+      if (heroGreeting) heroGreeting.textContent = config.hero_greeting || defaultConfig.hero_greeting;
+      if (heroRole) heroRole.textContent = config.hero_role || defaultConfig.hero_role;
+      if (heroDescription) heroDescription.textContent = config.hero_description || defaultConfig.hero_description;
+      if (aboutTitle) aboutTitle.textContent = config.about_title || defaultConfig.about_title;
+      if (aboutBio) aboutBio.textContent = config.about_bio || defaultConfig.about_bio;
+      if (contactTitle) contactTitle.textContent = config.contact_title || defaultConfig.contact_title;
+      if (footerText) footerText.textContent = config.footer_text || defaultConfig.footer_text;
+
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseSize = config.font_size || defaultConfig.font_size;
+      
+      document.querySelectorAll('[style*="font-family"]').forEach(el => {
+        if (el.style.fontFamily.includes('Playfair')) {
+          el.style.fontFamily = `'Playfair Display', ${customFont}, serif`;
+        } else {
+          el.style.fontFamily = `${customFont}, sans-serif`;
+        }
+      });
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ background_color: value });
+            }
+          },
+          {
+            get: () => config.secondary_color || defaultConfig.secondary_color,
+            set: (value) => {
+              config.secondary_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ secondary_color: value });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => config.primary_color || defaultConfig.primary_color,
+            set: (value) => {
+              config.primary_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ primary_color: value });
+            }
+          },
+          {
+            get: () => config.accent_color || defaultConfig.accent_color,
+            set: (value) => {
+              config.accent_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ accent_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            config.font_family = value;
+            if (window.elementSdk) window.elementSdk.setConfig({ font_family: value });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            config.font_size = value;
+            if (window.elementSdk) window.elementSdk.setConfig({ font_size: value });
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['site_title', config.site_title || defaultConfig.site_title],
+        ['tagline', config.tagline || defaultConfig.tagline],
+        ['hero_greeting', config.hero_greeting || defaultConfig.hero_greeting],
+        ['hero_role', config.hero_role || defaultConfig.hero_role],
+        ['hero_description', config.hero_description || defaultConfig.hero_description],
+        ['about_title', config.about_title || defaultConfig.about_title],
+        ['about_bio', config.about_bio || defaultConfig.about_bio],
+        ['contact_title', config.contact_title || defaultConfig.contact_title],
+        ['footer_text', config.footer_text || defaultConfig.footer_text]
+      ]);
+    }
+
+    // Photo Management
+    const photoModal = document.getElementById('photo-edit-modal');
+    const editPhotosBtn = document.getElementById('edit-photos-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const savePhotosBtn = document.getElementById('save-photos-btn');
+    
+    const photoData = {
+      profile: '',
+      poster: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&h=400&fit=crop',
+      painting: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=400&fit=crop',
+      science: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=600&h=400&fit=crop',
+      photography: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&h=400&fit=crop'
+    };
+    
+    // Load saved photos from localStorage
+    const savedPhotos = localStorage.getItem('portfolioPhotos');
+    if (savedPhotos) {
+      Object.assign(photoData, JSON.parse(savedPhotos));
+      updateAllPhotos();
+    }
+    
+    function updateAllPhotos() {
+      const profileContainer = document.querySelector('#home .floating .w-64');
+      const posterImg = document.querySelector('img[alt="Desain Poster"]');
+      const paintingImg = document.querySelector('img[alt="Lukisan"]');
+      const scienceImg = document.querySelector('img[alt="Proyek Sains"]');
+      const photographyImg = document.querySelector('img[alt="Fotografi"]');
+      
+      // Update profile photo
+      if (profileContainer) {
+        if (photoData.profile) {
+          profileContainer.innerHTML = `<img src="${photoData.profile}" alt="Elmyra Zahrathusita" class="w-full h-full object-cover" loading="lazy" onerror="console.error('Image failed to load:', this.src); this.style.background='linear-gradient(135deg, #e0f2fe 0%, #93c5fd 100%)'; this.alt='Profile photo unavailable';">`;
+        } else {
+          profileContainer.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-sky-100 to-blue-200 flex items-center justify-center">
+                <span class="text-6xl">📷</span>
+              </div>`;
+        }
+      }
+      
+      if (posterImg) posterImg.src = photoData.poster;
+      if (paintingImg) paintingImg.src = photoData.painting;
+      if (scienceImg) scienceImg.src = photoData.science;
+      if (photographyImg) photographyImg.src = photoData.photography;
+    }
+    
+    // Open modal
+    if (editPhotosBtn) {
+      editPhotosBtn.addEventListener('click', () => {
+        photoModal.classList.remove('hidden');
+        const previewProfile = document.getElementById('preview-profile');
+        if (photoData.profile) {
+          previewProfile.innerHTML = `<img src="${photoData.profile}" class="w-full h-full object-cover rounded-full">`;
+        } else {
+          previewProfile.innerHTML = '<span class="text-2xl">📷</span>';
+        }
+        document.getElementById('preview-poster').src = photoData.poster;
+        document.getElementById('preview-painting').src = photoData.painting;
+        document.getElementById('preview-science').src = photoData.science;
+        document.getElementById('preview-photography').src = photoData.photography;
+      });
+    }
+    
+    const editPhotosBtnMobile = document.getElementById('edit-photos-btn-mobile');
+    if (editPhotosBtnMobile) {
+      editPhotosBtnMobile.addEventListener('click', () => {
+        photoModal.classList.remove('hidden');
+        mobileMenu.classList.add('hidden');
+        const previewProfile = document.getElementById('preview-profile');
+        if (photoData.profile) {
+          previewProfile.innerHTML = `<img src="${photoData.profile}" class="w-full h-full object-cover rounded-full">`;
+        } else {
+          previewProfile.innerHTML = '<span class="text-2xl">📷</span>';
+        }
+        document.getElementById('preview-poster').src = photoData.poster;
+        document.getElementById('preview-painting').src = photoData.painting;
+        document.getElementById('preview-science').src = photoData.science;
+        document.getElementById('preview-photography').src = photoData.photography;
+      });
+    }
+    
+    // Close modal
+    function closeModal() {
+      photoModal.classList.add('hidden');
+    }
+    
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    
+    // File upload handlers
+    function handleFileUpload(inputId, previewId, photoKey) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      
+      input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            if (photoKey === 'profile') {
+              preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-full">`;
+            } else {
+              preview.src = e.target.result;
+            }
+            photoData[photoKey] = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+    
+    handleFileUpload('input-profile', 'preview-profile', 'profile');
+    handleFileUpload('input-poster', 'preview-poster', 'poster');
+    handleFileUpload('input-painting', 'preview-painting', 'painting');
+    handleFileUpload('input-science', 'preview-science', 'science');
+    handleFileUpload('input-photography', 'preview-photography', 'photography');
+    
+    // URL input handlers
+    function handleUrlInput(urlInputId, previewId, photoKey) {
+      const urlInput = document.getElementById(urlInputId);
+      const preview = document.getElementById(previewId);
+      
+      urlInput.addEventListener('input', (e) => {
+        const url = e.target.value.trim();
+        if (url) {
+          if (photoKey === 'profile') {
+            preview.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-full">`;
+          } else {
+            preview.src = url;
+          }
+          photoData[photoKey] = url;
+        }
+      });
+    }
+    
+    handleUrlInput('url-profile', 'preview-profile', 'profile');
+    handleUrlInput('url-poster', 'preview-poster', 'poster');
+    handleUrlInput('url-painting', 'preview-painting', 'painting');
+    handleUrlInput('url-science', 'preview-science', 'science');
+    handleUrlInput('url-photography', 'preview-photography', 'photography');
+    
+    // Save photos
+    if (savePhotosBtn) {
+      savePhotosBtn.addEventListener('click', () => {
+        localStorage.setItem('portfolioPhotos', JSON.stringify(photoData));
+        updateAllPhotos();
+        closeModal();
+        
+        // Show success message
+        const message = document.createElement('div');
+        message.textContent = '✓ Foto berhasil disimpan!';
+        message.className = 'fixed top-24 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[110]';
+        message.style.fontFamily = 'Poppins, sans-serif';
+        document.body.appendChild(message);
+        setTimeout(() => message.remove(), 3000);
+      });
+    }
+    
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+      
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c90e91516cb5f76',t:'MTc3MDI3ODgwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
